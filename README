@@ -1,0 +1,73 @@
+/*
+ * Match - Readable Expressions for JavaScript
+ * Copyright 2010, Marcus Phillips
+ * marcus@readableexpressions.com
+ *
+ *
+ * *** Licensing Information ***
+ * Licensed under the GPL Version 2 license
+ *
+ *
+ * *** Purpose ***
+ * Match provides a more accesible alternative to the syntax of Regular Expression literals
+ *
+ *
+ * *** Example usage ***
+ * see qombat.m.examples.js
+ *
+ *
+ * *** Todo ***
+ * \xxx   Find the ASCII character expressed by the octal number xxx  1   4   4
+ * \xdd   Find the ASCII character expressed by the hex number dd   1   4   4
+ * \uxxxx   Find the ASCII character expressed by the UNICODE xxxx  1   4   4
+ * lookahead()
+ */
+
+
+// * *** Example usage ***
+
+  // roughly equivalent to /^[-0-9A-z._+&]+@(?:[-0-9A-z]+\.)+[A-z]{2,6}\.?$/i
+  email_matcher = M(
+    M.beginning,
+
+    M.some(
+      M.or(
+        M.alphanumerics, '-', '.', '_', '+', '&'
+      )
+    ),
+    '@',
+    M.some(
+      M.some(
+        M.or(
+          M.alphanumerics,
+          '-'
+        )
+      ),
+      '.'
+    ),
+    M.between(2, 6,
+      M.alphas
+    ),
+
+    M.maybe('.'),
+    M.end,
+    M.insensitive
+  );
+
+
+
+  // equivalent to /<([A-z][0-9A-z]*)\b[^>]*>[^]*<\/\1>/
+  html_tag_matcher = M(
+    '<',
+      M.grouping(
+        M.alphas,M.any(M.alphanumerics)
+      ),
+      M.boundary,
+      M.any( M.nor('>') ),
+    '>',
+      M.any(),
+    '</',
+      M.backreference(1),
+    '>'
+  );
+
